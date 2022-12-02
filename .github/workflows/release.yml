@@ -22,15 +22,13 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: |
-            Minecraft 1.12.2
-            Automated release at commit ${{ env.SHA }}
           draft: false
           prerelease: false
 
       - name: Prepare Java
         uses: actions/setup-java@v3
         with:
+          distribution: adopt
           java-version: 17
 
       - name: Prepare depdendency cache
