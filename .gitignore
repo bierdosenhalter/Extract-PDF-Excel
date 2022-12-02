@@ -9,4 +9,6 @@ bin
 save
 *.sh
 *~
-
+.gradle
+.m2
+.travis.yml
