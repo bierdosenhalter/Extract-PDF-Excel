@@ -8,63 +8,66 @@ import java.util.*;
 /**
  * Created by eadgyo on 12/07/16.
  * <p/>
- * Lane containing sorted sorted blocks.
+ * Lane containing sorted blocks.
  */
-public class Lane
-{
-    private Rectangle2             rectangle;
+public class Lane {
+    private final Rectangle2 rectangle;
     private TreeMap<Double, Block> blocks;
 
-    public Lane()
-    {
+    public Lane() {
         rectangle = new Rectangle2();
-        blocks = new TreeMap<Double, Block>();
+        blocks = new TreeMap<>();
     }
 
-    public void setRectangle(Rectangle2 rectangle)
-    {
+    public void setRectangle(Rectangle2 rectangle) {
         this.rectangle.set(rectangle);
     }
 
-    public double getPos(int axis) { return this.rectangle.getPos(axis); }
+    public double getPos(int axis) {
+        return this.rectangle.getPos(axis);
+    }
 
     /**
      * Get the coordinate of the end of the lane along one axis.
+     *
      * @param axis used axis
      * @return end coordinate of the lane along one axis.
      */
-    public double getEndPos(int axis) { return this.rectangle.getEndPos(axis); }
+    public double getEndPos(int axis) {
+        return this.rectangle.getEndPos(axis);
+    }
 
-    public double getLength(int axis) { return this.rectangle.getLength(axis); }
+    public double getLength(int axis) {
+        return this.rectangle.getLength(axis);
+    }
 
-    public void setPos(int axis, double value)
-    {
+    public void setPos(int axis, double value) {
         this.rectangle.setPos(axis, value);
     }
 
-    public void setLength(int axis, double value)
-    {
+    public void setLength(int axis, double value) {
         this.rectangle.setLength(axis, value);
     }
 
-    public TreeMap<Double, Block> getBlocks()
-    {
+    public TreeMap<Double, Block> getBlocks() {
         return blocks;
     }
 
-    public Collection<Block> getBlocksCollection()
-    {
-        return blocks.values();
-    }
-
-    public void setBlocks(TreeMap<Double, Block> blocks)
-    {
+    public void setBlocks(TreeMap<Double, Block> blocks) {
         this.blocks = blocks;
     }
 
-    public Set<Block> copyBlocks() { return new HashSet<>(blocks.values()); }
+    public Collection<Block> getBlocksCollection() {
+        return blocks.values();
+    }
 
-    public void clearBlocks() { blocks.clear(); }
+    public Set<Block> copyBlocks() {
+        return new HashSet<>(blocks.values());
+    }
+
+    public void clearBlocks() {
+        blocks.clear();
+    }
 
     /**
      * Add block to the lane and fit bound lane to added block
@@ -73,8 +76,7 @@ public class Lane
      * @param oppositeAxis opposite axis of the lane
      * @param block        added block
      */
-    public void addBlockAndFitLane(int axis, int oppositeAxis, Block block)
-    {
+    public void addBlockAndFitLane(int axis, int oppositeAxis, Block block) {
         addBlock(axis, block);
         fitLane(axis, oppositeAxis, block);
     }
@@ -82,12 +84,11 @@ public class Lane
     /**
      * Add block to lane without updating lane bound
      *
-     * @param axis lane axis
+     * @param axis  lane axis
      * @param block added block
      */
-    public void addBlock(int axis, Block block)
-    {
-        assert(!blocks.containsKey(block.getPos(axis)));
+    public void addBlock(int axis, Block block) {
+        assert (!blocks.containsKey(block.getPos(axis)));
         blocks.put(block.getPos(axis), block);
     }
 
@@ -98,8 +99,7 @@ public class Lane
      * @param oppositeAxis lane opposite axis
      * @param block        added block
      */
-    public void fitLane(int axis, int oppositeAxis, Block block)
-    {
+    public void fitLane(int axis, int oppositeAxis, Block block) {
         // On main axis
         fitLaneOneAxis(axis, block);
 
@@ -113,19 +113,16 @@ public class Lane
      * @param axis  lane axis
      * @param block added blocks
      */
-    private void fitLaneOneAxis(int axis, Block block)
-    {
+    private void fitLaneOneAxis(int axis, Block block) {
         // If block lower coordinate is before lane lower coordinate
-        if (block.getPos(axis) < rectangle.getPos(axis))
-        {
+        if (block.getPos(axis) < rectangle.getPos(axis)) {
             // Change lane lower coordinate to block lower coordinate
             rectangle.addLength(axis, rectangle.getPos(axis) - block.getPos(axis));
             rectangle.setPos(axis, block.getPos(axis));
         }
 
         // If block higher coordinate is after lane higher coordinate
-        if (block.getPos(axis) + block.getLength(axis) > rectangle.getPos(axis) + rectangle.getLength(axis))
-        {
+        if (block.getPos(axis) + block.getLength(axis) > rectangle.getPos(axis) + rectangle.getLength(axis)) {
             // Change lane higher coordinate to lane higher coordinate
             rectangle.setLength(axis, block.getPos(axis) + block.getLength(axis) - rectangle.getPos(axis));
         }
@@ -134,8 +131,7 @@ public class Lane
     /**
      * @return number of lanes
      */
-    public int size()
-    {
+    public int size() {
         return blocks.size();
     }
 
@@ -143,11 +139,9 @@ public class Lane
      * Get a block from a key
      *
      * @param key block linked key
-     *
      * @return block if it exists or null if key is not linked
      */
-    public Block getBlock(double key)
-    {
+    public Block getBlock(double key) {
         return blocks.get(key);
     }
 
@@ -157,8 +151,7 @@ public class Lane
      * @param key to be checked
      * @return lower block and his value in map
      */
-    public Map.Entry<Double, Block> getLowerBlockEntry(double key)
-    {
+    public Map.Entry<Double, Block> getLowerBlockEntry(double key) {
         return blocks.lowerEntry(key);
     }
 
@@ -168,8 +161,7 @@ public class Lane
      * @param key to be checked
      * @return lower block
      */
-    public Block getLowerBlock(double key)
-    {
+    public Block getLowerBlock(double key) {
         Map.Entry<Double, Block> lowerBlockEntry = getLowerBlockEntry(key);
 
         return (lowerBlockEntry != null) ? lowerBlockEntry.getValue() : null;
@@ -181,8 +173,7 @@ public class Lane
      * @param key to be checked
      * @return lower or equal block and his value in map
      */
-    public Map.Entry<Double, Block> getFloorBlockEntry(double key)
-    {
+    public Map.Entry<Double, Block> getFloorBlockEntry(double key) {
         return blocks.floorEntry(key);
     }
 
@@ -192,8 +183,7 @@ public class Lane
      * @param key to be checked
      * @return lower or equal block
      */
-    public Block getFloorBlock(double key)
-    {
+    public Block getFloorBlock(double key) {
         Map.Entry<Double, Block> floorBlockEntry = getFloorBlockEntry(key);
 
         return (floorBlockEntry != null) ? floorBlockEntry.getValue() : null;
@@ -205,8 +195,7 @@ public class Lane
      * @param key to be checked
      * @return higher block and his value in map
      */
-    public Map.Entry<Double, Block> getHigherBlockEntry(double key)
-    {
+    public Map.Entry<Double, Block> getHigherBlockEntry(double key) {
         return blocks.higherEntry(key);
     }
 
@@ -216,8 +205,7 @@ public class Lane
      * @param key to be checked
      * @return higher block and his value in map
      */
-    public Map.Entry<Double, Block> getCeilingBlockEntry(double key)
-    {
+    public Map.Entry<Double, Block> getCeilingBlockEntry(double key) {
         return blocks.ceilingEntry(key);
     }
 
@@ -228,27 +216,23 @@ public class Lane
      * @param key to be checked
      * @return higher block
      */
-    public Block getHigherBlock(double key)
-    {
+    public Block getHigherBlock(double key) {
         Map.Entry<Double, Block> higherBlockEntry = getHigherBlockEntry(key);
 
         return (higherBlockEntry != null) ? higherBlockEntry.getValue() : null;
     }
 
-    public Rectangle2 getBound()
-    {
+    public Rectangle2 getBound() {
         return rectangle;
     }
 
-    public void remove(int axis, Block block)
-    {
+    public void remove(int axis, Block block) {
         Block removed = blocks.remove(block.getPos(axis));
 
         assert (removed != null);
     }
 
-    public Block remove(Double key)
-    {
+    public Block remove(Double key) {
         return blocks.remove(key);
     }
 
@@ -258,11 +242,9 @@ public class Lane
      * @param axis         lane axis
      * @param oppositeAxis opposite axis of the lane
      */
-    public void resetAndFitLaneToInBlocks(int axis, int oppositeAxis)
-    {
+    public void resetAndFitLaneToInBlocks(int axis, int oppositeAxis) {
         // If there are no blocks in lane
-        if (blocks.size() == 0)
-        {
+        if (blocks.size() == 0) {
             setLength(axis, 0);
             setLength(oppositeAxis, 0);
             return;
@@ -276,8 +258,7 @@ public class Lane
         this.rectangle.set(first.getBound());
 
         // Reinsert all blocks
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             Block reinsertedBlock = iterator.next();
             fitLaneOneAxis(axis, reinsertedBlock);
             fitLaneOneAxis(oppositeAxis, reinsertedBlock);
@@ -285,13 +266,12 @@ public class Lane
     }
 
     /**
-     * Fit lane to an higher lane. Only end bound of lane is changed.
+     * Fit lane to a higher lane. Only end bound of lane is changed.
      *
      * @param oppositeAxis opposite lane axis
-     * @param higherLane lane higher than actual lane
+     * @param higherLane   lane higher than actual lane
      */
-    public void fitToHigherLane(int oppositeAxis, Lane higherLane)
-    {
+    public void fitToHigherLane(int oppositeAxis, Lane higherLane) {
         double maxLength = higherLane.getPos(oppositeAxis) - getPos(oppositeAxis);
 
         setLength(oppositeAxis, Math.min(getLength(oppositeAxis), maxLength));
@@ -300,24 +280,22 @@ public class Lane
     /**
      * Check if lane contain block
      *
-     * @param axis lane axis
+     * @param axis  lane axis
      * @param block checked block
-     *
      * @return true if block is in lane, false if it isn't
      */
-    public boolean containsBlock(int axis, Block block)
-    {
-        Block gettedBlock = getBlock(block.getPos(axis));
+    public boolean containsBlock(int axis, Block block) {
+        Block gotBlock = getBlock(block.getPos(axis));
 
-        return block == gettedBlock;
+        return block == gotBlock;
     }
 
     /**
      * Get all blocks in set
+     *
      * @return list of blocks, not keeping data sorted
      */
-    public Collection<Block> retrieveBlocks()
-    {
+    public Collection<Block> retrieveBlocks() {
         return blocks.values();
     }
 }

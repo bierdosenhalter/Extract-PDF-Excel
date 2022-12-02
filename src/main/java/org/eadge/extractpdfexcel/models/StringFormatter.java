@@ -9,17 +9,14 @@ import java.util.Collection;
  * <p/>
  * Format text.
  */
-public abstract class StringFormatter
-{
+public abstract class StringFormatter {
     /**
      * Format collection of blocks containing unformatted text. Update their bounds and formatted Text.
      *
      * @param rawBlocks collection of blocks containing unformatted text.
      */
-    public void formatBlocks(Collection<Block> rawBlocks)
-    {
-        for (Block rawBlock : rawBlocks)
-        {
+    public void formatBlocks(Collection<Block> rawBlocks) {
+        for (Block rawBlock : rawBlocks) {
             formatBlock(rawBlock);
         }
     }
@@ -29,5 +26,5 @@ public abstract class StringFormatter
      *
      * @param rawBlock block containing unformatted text.
      */
-    public abstract void  formatBlock(Block rawBlock);
+    public abstract void formatBlock(Block rawBlock);
 }

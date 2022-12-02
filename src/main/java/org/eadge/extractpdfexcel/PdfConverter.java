@@ -1,8 +1,5 @@
 package org.eadge.extractpdfexcel;
 
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PRAcroForm;
-import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfReader;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -25,8 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by eadgyo on 12/07/16.
@@ -45,8 +40,7 @@ import java.util.Map;
  * Operations must be done in designated order.
  * </p>
  */
-public class PdfConverter
-{
+public class PdfConverter {
 
     /**
      * Extract transformedData from PDF
@@ -54,18 +48,16 @@ public class PdfConverter
      * Read pdf file from path location. If file exists and is in pdf format, extract all text from all pages in pdf
      * file. If file exists but is not a pdf throw <tt>IncorrectFileException</tt>. If file doesn't exist or is not
      * readable throw <tt> NoSuchFileException</tt>.
-     *
+     * <p>
      * Using the default text block identifier
      * </p>
      *
-     * @param path                pdf file location
-     *
+     * @param path pdf file location
      * @return extractedData separate in blocks containing text and position for each page.
      */
     public static ExtractedData extractFromFile(String path) throws
-                                                                                         FileNotFoundException,
-                                                                                         IncorrectFileTypeException
-    {
+            FileNotFoundException,
+            IncorrectFileTypeException {
         return extractFromFile(path, new TextBlockIdentifier());
     }
 
@@ -80,30 +72,26 @@ public class PdfConverter
      * @param path                pdf file location
      * @param textBlockIdentifier TextBlockIdentifier define text separation parameters (space between to letters to
      *                            create a space, height between to letters creating new line).
-     *
      * @return extractedData separate in blocks containing text and position for each page.
      */
     public static ExtractedData extractFromFile(String path,
                                                 TextBlockIdentifier textBlockIdentifier) throws
-                                                                                         FileNotFoundException,
-                                                                                         IncorrectFileTypeException
-    {
+            FileNotFoundException,
+            IncorrectFileTypeException {
         // Create file reader
         File file = new File(path);
 
-        if (file.exists())
-        {
+        if (file.exists()) {
             // Create Pdf Extractor using path location
-            PdfReader pdf = null;
-            try
-            {
+            PdfReader pdf;
+
+            try {
                 pdf = new PdfReader(path);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 // pdf is not readable
                 throw new IncorrectFileTypeException(path);
             }
+
             // Pdf is readable
             // Create parser to extract data from pdf
             PdfParser parser = new PdfParser(pdf, textBlockIdentifier);
@@ -117,40 +105,39 @@ public class PdfConverter
                 parser.mergeBlocks(textBlockIdentifier.mergeFactor);
 
             parser.close();
+
             // return extractedData extracted with parser
             return parser.getExtractedData();
-        }
-        else
-        {
+        } else {
             throw new FileNotFoundException(path);
         }
     }
 
     /**
      * Remove duplicated blocks
+     *
      * @param extractedData modified collection of blocks
      */
-    public static void removeDuplicatedData(ExtractedData extractedData)
-    {
+    public static void removeDuplicatedData(ExtractedData extractedData) {
         extractedData.cleanDuplicatedData();
     }
 
     /**
      * Merge near blocks following fonts and orientation rules
-     * @param extractedData modified colleciton of blocks
+     *
+     * @param extractedData modified collection of blocks
      */
-    public static void mergeData(ExtractedData extractedData, double mergeFactor)
-    {
+    public static void mergeData(ExtractedData extractedData, double mergeFactor) {
         extractedData.mergeBlocks(mergeFactor);
     }
 
     /**
      * Remove duplicated data
      * Merge near blocks following fonts and orientation rules
-     * @param extractedData modified colleciton of blocks
+     *
+     * @param extractedData modified collection of blocks
      */
-    public static void cleanAndMergeData(ExtractedData extractedData, double mergeFactor)
-    {
+    public static void cleanAndMergeData(ExtractedData extractedData, double mergeFactor) {
         extractedData.cleanDuplicatedData();
         extractedData.mergeBlocks(mergeFactor);
     }
@@ -168,16 +155,14 @@ public class PdfConverter
      * </p>
      *
      * @param extractedData extracted pages from one pdf file
-     * //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
-     *                                             if colliding percent between block and higher lane is higher than
-     *                                             block and actual block lane.
-     *
+     *                      //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
+     *                      if colliding percent between block and higher lane is higher than
+     *                      block and actual block lane.
      * @return Sorted Data from extracted pages. Data in extractedData are sorted in the right column and line. It
      * keeps page separation. Columns and lines contained sorted blocks according to Y-axis for columns and X-axis
      * for lines.
      */
-    public static SortedData sortExtractedData(ExtractedData extractedData)
-    {
+    public static SortedData sortExtractedData(ExtractedData extractedData) {
         return sortExtractedData(extractedData, SortedPage.DEFAULT_LINE_AXIS, SortedPage.DEFAULT_COLUMN_AXIS);
     }
 
@@ -196,28 +181,24 @@ public class PdfConverter
      * @param extractedData extracted pages from one pdf file
      * @param axisIndex     axis of lane, 0 for Line and 1 for Column
      * @param oppositeIndex opposite axis of lane, 1 for Line and 0 for Column
-     * //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
-     *                                             if colliding percent between block and higher lane is higher than
-     *                                             block and actual block lane.
-     *
+     *                      //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
+     *                      if colliding percent between block and higher lane is higher than
+     *                      block and actual block lane.
      * @return Sorted Data from extracted pages. Data in extractedData are sorted in the right column and line. It
      * keeps page separation. Columns and lines contained sorted blocks according to Y-axis for columns and X-axis
      * for lines.
      */
-    public static SortedData sortExtractedData(ExtractedData extractedData, int axisIndex, int oppositeIndex)
-    {
+    public static SortedData sortExtractedData(ExtractedData extractedData, int axisIndex, int oppositeIndex) {
         // Grouping all sortedPage
         SortedData sortedData = new SortedData();
 
         // For each extractedPage
         // Start at one
-        for (int i = 1; i <= extractedData.numberOfPages(); i++)
-        {
+        for (int i = 1; i <= extractedData.numberOfPages(); i++) {
             ExtractedPage extractedPage = extractedData.getExtractedPage(i);
 
             // If page has been extracted
-            if (extractedPage != null)
-            {
+            if (extractedPage != null) {
                 // Create sortedPage
                 SortedPage sortedPage = sortExtractedPage(extractedPage, axisIndex, oppositeIndex);
 
@@ -241,42 +222,39 @@ public class PdfConverter
      * axisIndex and oppositeIndex are used to merge Line and Column process.
      * </p>
      *
-     * @param extractedPage              extracted page from one pdf file
-     * @param axisIndex                  axis of lane, 0 for Line and 1 for Column
-     * @param oppositeIndex              opposite axis of lane, 1 for Line and 0 for Column
-     * //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
-     *                                             if colliding percent between block and higher lane is higher than
-     *                                             block and actual block lane.
-     *
+     * @param extractedPage extracted page from one pdf file
+     * @param axisIndex     axis of lane, 0 for Line and 1 for Column
+     * @param oppositeIndex opposite axis of lane, 1 for Line and 0 for Column
+     *                      //@param reinsertBlockMoreCollidingHigherLane if true, at the end of insert process, move block to higher lane,
+     *                      if colliding percent between block and higher lane is higher than
+     *                      block and actual block lane.
      * @return Sorted Data from extracted pages. Data in extractedData are sorted in the right column and line. It
      * keeps page separation. Columns and lines contained sorted blocks according to Y-axis for columns and X-axis
      * for lines.
      */
     public static SortedPage sortExtractedPage(ExtractedPage extractedPage,
                                                int axisIndex,
-                                               int oppositeIndex)
-    {
+                                               int oppositeIndex) {
         // Start creating sortedPage data
-        Lanes      columns    = new Lanes();
-        Lanes      lines      = new Lanes();
+        Lanes columns = new Lanes();
+        Lanes lines = new Lanes();
         SortedPage sortedPage = new SortedPage(columns, lines);
 
         Collection<Block> blocks = extractedPage.getBlocks();
 
         // Sort each block
-        for (Block block : blocks)
-        {
+        for (Block block : blocks) {
             // Insert in the correct line or create new one
             BlockSorter.insertInLanes(axisIndex,
-                                      oppositeIndex,
-                                      block,
-                                      lines);
+                    oppositeIndex,
+                    block,
+                    lines);
 
             // Insert in the correct column or create new one
             BlockSorter.insertInLanes(oppositeIndex,
-                                      axisIndex,
-                                      block,
-                                      columns);
+                    axisIndex,
+                    block,
+                    columns);
         }
 
         // If end reinserting block option is activated
@@ -299,21 +277,17 @@ public class PdfConverter
      * Create excel pages from sorted data, using 2D array created,
      *
      * @param sortedData data sorted in column and line
-     *
      * @return list of excel pages.
      */
-    public static ArrayList<XclPage> createExcelPages(SortedData sortedData)
-    {
+    public static ArrayList<XclPage> createExcelPages(SortedData sortedData) {
         ArrayList<XclPage> xclPages = new ArrayList<>();
 
-        for (int pageIndex = 1; pageIndex <= sortedData.numberOfPages(); pageIndex++)
-        {
+        for (int pageIndex = 1; pageIndex <= sortedData.numberOfPages(); pageIndex++) {
             // Get sortedPage
             SortedPage sortedPage = sortedData.getSortedPage(pageIndex);
 
             // If page exists (has been loaded)
-            if (sortedPage != null)
-            {
+            if (sortedPage != null) {
                 xclPages.add(createExcelPage(sortedPage));
             }
         }
@@ -326,49 +300,43 @@ public class PdfConverter
      * Create excel page from sorted data, using 2D array created,
      *
      * @param sortedPage data sorted in column and line
-     *
      * @return list of excel pages.
      */
-    public static XclPage createExcelPage(SortedPage sortedPage)
-    {
+    public static XclPage createExcelPage(SortedPage sortedPage) {
         // Create 2D array containing blocks using sorted lines and columns from sortedData
-        My2DArray<Block>  arrayOfBlocks = sortedPage.create2DArrayOfBlocks();
-        ArrayList<Double> columnsSize   = sortedPage.getColumnsWidth();
-        ArrayList<Double> linesSize     = sortedPage.getLinesHeight();
+        My2DArray<Block> arrayOfBlocks = sortedPage.create2DArrayOfBlocks();
+        ArrayList<Double> columnsSize = sortedPage.getColumnsWidth();
+        ArrayList<Double> linesSize = sortedPage.getLinesHeight();
 
         // return created Excel page
         return new XclPage(arrayOfBlocks, columnsSize, linesSize);
     }
 
     /**
-     * Create excel sheet using workbook and xclPage, filling box with formatted text.
+     * Create Excel sheet using workbook and xclPage, filling box with formatted text.
      *
-     * @param sheetName name of the created excel sheet.
-     * @param wb        used excel workBook to insert page
-     * @param xclPage   excel page information. Containing cells and dimensions of columns and lines.
-     * @param lineFactor line size factor
+     * @param sheetName    name of the created Excel sheet.
+     * @param wb           used Excel workBook to insert page
+     * @param xclPage      excel page information. Containing cells and dimensions of columns and lines.
+     * @param lineFactor   line size factor
      * @param columnFactor column size factor
-     * @return created excel sheet.
+     * @return created Excel sheet.
      */
     public static HSSFSheet createExcelSheet(String sheetName, HSSFWorkbook wb, XclPage xclPage, double lineFactor, double
-            columnFactor)
-    {
-        // Create excel sheet
+            columnFactor) {
+        // Create Excel sheet
         HSSFSheet sheet = wb.createSheet(sheetName);
 
         // Parse columns and lines
-        for (int line = 0; line < xclPage.numberOfLines(); line++)
-        {
+        for (int line = 0; line < xclPage.numberOfLines(); line++) {
             HSSFRow createdLine = sheet.createRow(line);
             if (lineFactor != 0)
                 createdLine.setHeight((short) (xclPage.getLineHeight(line) * 50));
-            for (int col = 0; col < xclPage.numberOfColumns(); col++)
-            {
+            for (int col = 0; col < xclPage.numberOfColumns(); col++) {
                 Block block = xclPage.getBlockAt(col, line);
 
-                // If there is a block a the given position
-                if (block != null)
-                {
+                // If there is a block at the given position
+                if (block != null) {
                     // Create a new cell and add the block content in this new cell
                     HSSFCell createdCell = createdLine.createCell(col);
                     createdCell.setCellValue(block.getFormattedText());
@@ -377,10 +345,8 @@ public class PdfConverter
         }
 
         // Set the width of each lane
-        if (columnFactor != 0)
-        {
-            for (int col = 0; col < xclPage.numberOfColumns(); col++)
-            {
+        if (columnFactor != 0) {
+            for (int col = 0; col < xclPage.numberOfColumns(); col++) {
                 sheet.setColumnWidth(col, (int) xclPage.getColumnWidth(col) * 20);
             }
         }
@@ -389,23 +355,23 @@ public class PdfConverter
     }
 
     /**
-     * Convert a pdf file into an excel sheets
-     * @param sourcePDFPath path for the used source pdf
-     * @param workbook used workBook for created sheets
+     * Convert a pdf file into an Excel sheets
+     *
+     * @param sourcePDFPath       path for the used source pdf
+     * @param workbook            used workBook for created sheets
      * @param textBlockIdentifier defines parameter used to
-     * @param lineAxis 0 if the pdf is in portray mode
-     * @param columnAxis 1 if the pdf is in portray mode
-     * @param lineFactor line size factor
-     * @param columnFactor column size factor
+     * @param lineAxis            0 if the pdf is in portray mode
+     * @param columnAxis          1 if the pdf is in portray mode
+     * @param lineFactor          line size factor
+     * @param columnFactor        column size factor
      */
     public static ArrayList<HSSFSheet> createExcelSheets(String sourcePDFPath,
-                                       HSSFWorkbook workbook,
-                                       TextBlockIdentifier textBlockIdentifier,
-                                        int lineAxis,
-                                        int columnAxis, double lineFactor,
+                                                         HSSFWorkbook workbook,
+                                                         TextBlockIdentifier textBlockIdentifier,
+                                                         int lineAxis,
+                                                         int columnAxis, double lineFactor,
                                                          double columnFactor) throws FileNotFoundException,
-                                                                        IncorrectFileTypeException
-    {
+            IncorrectFileTypeException {
         ArrayList<HSSFSheet> sheets = new ArrayList<>();
 
         // Extract data from the source pdf file
@@ -419,8 +385,7 @@ public class PdfConverter
 
         // Create sheets for each pages
         int page = 1;
-        for (XclPage excelPage : excelPages)
-        {
+        for (XclPage excelPage : excelPages) {
             HSSFSheet excelSheet = PdfConverter.createExcelSheet("page " + page, workbook, excelPage, lineFactor, columnFactor);
             sheets.add(excelSheet);
             page++;
@@ -430,43 +395,43 @@ public class PdfConverter
     }
 
     /**
-     * Convert a pdf file into an excel sheets
+     * Convert a pdf file into an Excel sheets
+     *
      * @param sourcePDFPath path for the used source pdf
-     * @param workbook used workbook for creating sheets
+     * @param workbook      used workbook for creating sheets
      */
     public static ArrayList<HSSFSheet> createExcelSheets(String sourcePDFPath, HSSFWorkbook workbook) throws
-                                                                                           FileNotFoundException,
-                                                                                       IncorrectFileTypeException
-    {
+            FileNotFoundException,
+            IncorrectFileTypeException {
         return createExcelSheets(sourcePDFPath, workbook, new TextBlockIdentifier(), 0, 1, 0, 0);
     }
 
     /**
      * Create Excel file from pdf source
-     * @param sourcePDFPath path for the used source pdf
-     * @param xclPath path for the created excel file
+     *
+     * @param sourcePDFPath       path for the used source pdf
+     * @param xclPath             path for the created Excel file
      * @param textBlockIdentifier defines parameter used to
-     * @param lineAxis 0 if the pdf is in portray mode
-     * @param columnAxis 1 if the pdf is in portray mode
-     * @param lineFactor line size factor
-     * @param columnFactor column size factor
+     * @param lineAxis            0 if the pdf is in portray mode
+     * @param columnAxis          1 if the pdf is in portray mode
+     * @param lineFactor          line size factor
+     * @param columnFactor        column size factor
      */
     public static void createExcelFile(String sourcePDFPath, String xclPath,
                                        TextBlockIdentifier textBlockIdentifier,
                                        int lineAxis,
                                        int columnAxis,
                                        double lineFactor,
-                                       double columnFactor) throws IOException
-    {
+                                       double columnFactor) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         ArrayList<HSSFSheet> excelSheets = createExcelSheets(sourcePDFPath,
-                                                             workbook,
-                                                             textBlockIdentifier,
-                                                             lineAxis,
-                                                             columnAxis,
-                                                             lineFactor,
-                                                             columnFactor);
+                workbook,
+                textBlockIdentifier,
+                lineAxis,
+                columnAxis,
+                lineFactor,
+                columnFactor);
 
         FileOutputStream out = new FileOutputStream(xclPath);
         workbook.write(out);
@@ -475,29 +440,29 @@ public class PdfConverter
 
     /**
      * Create Excel file from pdf source
+     *
      * @param sourcePDFPath path for the used source pdf
-     * @param xclPath path for the created excel file
+     * @param xclPath       path for the created Excel file
      */
-    public static void createExcelFile(String sourcePDFPath, String xclPath) throws IOException
-    {
-        createExcelFile(sourcePDFPath, xclPath, new TextBlockIdentifier(),0, 1,0, 0);
+    public static void createExcelFile(String sourcePDFPath, String xclPath) throws IOException {
+        createExcelFile(sourcePDFPath, xclPath, new TextBlockIdentifier(), 0, 1, 0, 0);
     }
 
     /**
      * Display the xclPage
+     *
      * @param xclPage displayed xclPage
      */
-    public static void displayXCLPage(XclPage xclPage)
-    {
+    public static void displayXCLPage(XclPage xclPage) {
         FrameCreator.displayXclPage("Xcl", 800, 600, xclPage);
     }
 
     /**
      * Display the xclPages
+     *
      * @param xclPages displayed xclPages
      */
-    public static Collection<JFrame>  displayXCLPages(Collection<XclPage> xclPages)
-    {
+    public static Collection<JFrame> displayXCLPages(Collection<XclPage> xclPages) {
         ArrayList<JFrame> frames = new ArrayList<>();
 
         FrameCreator.displayXclPages("XCL", 800, 600, xclPages);
@@ -507,19 +472,17 @@ public class PdfConverter
 
     /**
      * Display the xclPage
+     *
      * @param sourcePdf displayed pdf converted to xcl
      */
-    public static Collection<JFrame> displayXCLPage(String sourcePdf) throws FileNotFoundException, IncorrectFileTypeException
-    {
+    public static Collection<JFrame> displayXCLPage(String sourcePdf) throws FileNotFoundException, IncorrectFileTypeException {
         ArrayList<XclPage> xclPages = convertFileToXclPages(sourcePdf);
-        Collection<JFrame> frames = displayXCLPages(xclPages);
 
-        return frames;
+        return displayXCLPages(xclPages);
     }
 
     public static ArrayList<XclPage> convertFileToXclPages(String sourcePdf) throws FileNotFoundException,
-                                                                           IncorrectFileTypeException
-    {
+            IncorrectFileTypeException {
         // Extract data from the source pdf file
         ExtractedData extractedData = PdfConverter.extractFromFile(sourcePdf, new TextBlockIdentifier());
 

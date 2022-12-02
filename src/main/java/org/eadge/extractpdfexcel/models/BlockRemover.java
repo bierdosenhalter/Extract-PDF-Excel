@@ -6,13 +6,13 @@ import java.util.Collection;
 
 /**
  * Created by eadgyo on 21/07/16.
- *
+ * <p>
  * Remove block under some conditions.
  */
-public abstract class BlockRemover
-{
+public abstract class BlockRemover {
     /**
      * Remove block under some conditions.
+     *
      * @param blocks list of blocks to treat.
      */
     public abstract void removeBlock(Collection<Block> blocks);

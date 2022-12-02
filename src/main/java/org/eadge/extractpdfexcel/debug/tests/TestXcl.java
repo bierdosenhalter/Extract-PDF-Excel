@@ -8,23 +8,19 @@ import org.eadge.extractpdfexcel.data.block.Block;
 import org.eadge.extractpdfexcel.data.geom.Rectangle2;
 import org.eadge.extractpdfexcel.debug.display.FrameCreator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Created by eadgyo on 27/07/16.
- *
+ * <p>
  * Test creation of xcl
  */
-public class TestXcl
-{
-    public static void main(String[] args) throws IOException
-    {
+public class TestXcl {
+    public static void main(String[] args) {
         testXcl();
     }
 
-    public static boolean testXcl()
-    {
+    public static boolean testXcl() {
         SortedPage sortedPage = createSortedPageEx();
 
         XclPage excelPage = PdfConverter.createExcelPage(sortedPage);
@@ -34,8 +30,7 @@ public class TestXcl
         return true;
     }
 
-    public static SortedPage createSortedPage()
-    {
+    public static SortedPage createSortedPage() {
         ExtractedPage extractedPage = new ExtractedPage(800, 600);
 
         ArrayList<Block> blocks = new ArrayList<>();
@@ -76,8 +71,7 @@ public class TestXcl
         return PdfConverter.sortExtractedPage(extractedPage, 0, 1);
     }
 
-    public static SortedPage createSortedPageEx()
-    {
+    public static SortedPage createSortedPageEx() {
         return PdfConverter.sortExtractedPage(TestSorter.createExtractedPageEx("test/pdf/test.pdf"), 0, 1);
     }
 }

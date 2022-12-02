@@ -4,15 +4,12 @@ public final class SingletonConfig {
     private static SingletonConfig instance;
     public boolean ignoreDirection;
 
-    public SingletonConfig()
-    {
+    public SingletonConfig() {
         this.ignoreDirection = false;
     }
 
-    public static SingletonConfig getInstance()
-    {
-        if (instance == null)
-        {
+    public static SingletonConfig getInstance() {
+        if (instance == null) {
             instance = new SingletonConfig();
         }
 

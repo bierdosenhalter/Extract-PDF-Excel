@@ -8,47 +8,38 @@ import org.eadge.extractpdfexcel.exception.IncorrectFileTypeException;
 import org.eadge.extractpdfexcel.models.TextBlockIdentifier;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Collection;
 
 /**
  * Created by eadgyo on 27/07/16.
- *
+ * <p>
  * Unit testing for pdf extractor
  */
-public class TestExtractor
-{
-    public static void main(String[] args) throws IOException
-    {
+public class TestExtractor {
+    public static void main(String[] args) {
         boolean result = testExtractor();
 
         System.out.println(Result.transformResult(result) + " Test extractor");
     }
 
     /**
-     *
      * @return success
      */
-    public static boolean testExtractor()
-    {
+    public static boolean testExtractor() {
         // Create default textBlock identifier
         TextBlockIdentifier blockIdentifier = new TextBlockIdentifier();
 
         // Load the right pdf
-        try
-        {
+        try {
             ExtractedData extractedPdf = PdfConverter.extractFromFile("test/pdf/test.pdf", blockIdentifier);
 
             Collection<ExtractedPage> pages = extractedPdf.getPagesCollection();
 
             // Display extracted pages
-            for (ExtractedPage page : pages)
-            {
+            for (ExtractedPage page : pages) {
                 FrameCreator.displayExtractedPage("Test extracted blocks", page);
             }
-        }
-        catch (FileNotFoundException | IncorrectFileTypeException e)
-        {
+        } catch (FileNotFoundException | IncorrectFileTypeException e) {
             e.printStackTrace();
             return false;
         }

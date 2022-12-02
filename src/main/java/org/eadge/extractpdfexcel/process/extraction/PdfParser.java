@@ -1,10 +1,8 @@
 package org.eadge.extractpdfexcel.process.extraction;
 
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
-import com.itextpdf.text.pdf.parser.TextRenderInfo;
 import org.eadge.extractpdfexcel.data.ExtractedData;
 import org.eadge.extractpdfexcel.data.ExtractedPage;
 import org.eadge.extractpdfexcel.data.block.Block;
@@ -25,49 +23,42 @@ import java.util.Set;
  * <p/>
  * Extract text from pdf keeping text separated in pages.
  */
-public class PdfParser
-{
-    private final TextBlockIdentifier    textBlockIdentifier;
-    private final PdfReader              pdf;
+public class PdfParser {
+    private final TextBlockIdentifier textBlockIdentifier;
+    private final PdfReader pdf;
     private final PdfReaderContentParser parser;
-    private final ExtractedData          extractedData;
+    private final ExtractedData extractedData;
 
-    public PdfParser(PdfReader pdf, TextBlockIdentifier textBlockIdentifier)
-    {
+    public PdfParser(PdfReader pdf, TextBlockIdentifier textBlockIdentifier) {
         this.pdf = pdf;
         this.textBlockIdentifier = textBlockIdentifier;
         this.parser = new PdfReaderContentParser(pdf);
         this.extractedData = new ExtractedData();
     }
 
-    public ExtractedData getExtractedData()
-    {
+    public ExtractedData getExtractedData() {
         return extractedData;
     }
 
     /**
      *
-     *
      */
-    public ArrayList<Block> readFields(int pageIndex)
-    {
+    public ArrayList<Block> readFields(int pageIndex) {
         ArrayList<Block> blocks = new ArrayList<>();
 
         AcroFields acroFields = this.pdf.getAcroFields();
         Collection<AcroFields.Item> values = acroFields.getFields().values();
-        for (AcroFields.Item item: values) {
+        for (AcroFields.Item item : values) {
             PdfDictionary widget = item.getWidget(0);
             Integer page = item.getPage(0);
-            if (pageIndex == page && widget.getAsString(PdfName.DV).toString() == "")
-            {
+            if (pageIndex == page && widget.getAsString(PdfName.DV).toString().equals("")) {
                 PdfArray rect = widget.getAsArray(PdfName.RECT);
                 PdfString text = widget.getAsString(PdfName.V);
                 PdfString font = widget.getAsString(PdfName.DA);
                 String[] s = font.toString().split(" ");
                 float fontSize = 10.0f;
-                if (s.length > 2 && s[0] == "f2")
-                {
-                    fontSize = Float.valueOf(s[1]);
+                if (s.length > 2 && s[0].equals("f2")) {
+                    fontSize = Float.parseFloat(s[1]);
                 }
 
                 float x = rect.getAsNumber(0).floatValue();
@@ -83,16 +74,15 @@ public class PdfParser
         return blocks;
     }
 
-    private Block createBlock(String text, Rectangle2 blockRectangle, float fontSize)
-    {
+    private Block createBlock(String text, Rectangle2 blockRectangle, float fontSize) {
         // Set direction to TOP
         Direction blockDirection = Direction.TOP;
         Direction textDirection = Direction.TOP;
 
         // Add color and font info
         Set<BaseColor> fontColors = new HashSet<>();
-        Set<BaseColor>    backColors = new HashSet<>();
-        Set<DocumentFont> fonts      = new HashSet<>();
+        Set<BaseColor> backColors = new HashSet<>();
+        Set<DocumentFont> fonts = new HashSet<>();
 
         // Add default colors and font
         /*fontColors.add(BaseColor.BLACK);
@@ -100,18 +90,15 @@ public class PdfParser
         new DocumentFont(new Font(Font.FontFamily.COURIER, fontSize));
         fonts.add();*/
 
-
         // Create and return block with direction, rectangle and info
-        return new Block(text.toString().trim(), blockRectangle);
+        return new Block(text.trim(), blockRectangle);
     }
 
     /**
      * Read all pages in pdf and store extracted data in extractedData variable
      */
-    public void readAllPage()
-    {
-        for (int i = 1; i <= pdf.getNumberOfPages(); i++)
-        {
+    public void readAllPage() {
+        for (int i = 1; i <= pdf.getNumberOfPages(); i++) {
             readPage(i);
         }
     }
@@ -121,46 +108,40 @@ public class PdfParser
      *
      * @param pageIndex index of read page
      */
-    public void readPage(int pageIndex)
-    {
+    public void readPage(int pageIndex) {
         ArrayList<Block> extractedBlocksFields = readFields(pageIndex);
 
         // Set extractor
-        DefaultSimpleExtractor         extractor = new DefaultSimpleExtractor(textBlockIdentifier);
+        DefaultSimpleExtractor extractor = new DefaultSimpleExtractor(textBlockIdentifier);
 
-        try
-        {
+        try {
             // Extract content with defined extractor
             parser.processContent(pageIndex, extractor);
             extractor.push();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return;
         }
 
-        float pdfWidth  = pdf.getPageSize(pageIndex).getWidth();
+        float pdfWidth = pdf.getPageSize(pageIndex).getWidth();
         float pdfHeight = pdf.getPageSize(pageIndex).getHeight();
 
         ArrayList<Block> extractedBlocks = extractor.getExtractedBlocksAndRemovePdfOrientation(pdfWidth, pdfHeight);
         extractedBlocks.addAll(extractedBlocksFields);
 
         ExtractedPage extractedPage = new ExtractedPage(pdfWidth,
-                                                        pdfHeight,
-                                                        extractedBlocks);
+                pdfHeight,
+                extractedBlocks);
 
         // Create a new page to add extracted blocks
         extractedData.insertPage(pageIndex,
-                                 extractedPage);
+                extractedPage);
     }
 
-    public void cleanDuplicatedData()
-    {
+    public void cleanDuplicatedData() {
         extractedData.cleanDuplicatedData();
     }
 
-    public void mergeBlocks(double mergeFactor)
-    {
+    public void mergeBlocks(double mergeFactor) {
         extractedData.mergeBlocks(mergeFactor);
     }
 

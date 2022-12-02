@@ -6,18 +6,14 @@ import org.eadge.extractpdfexcel.data.XclPage;
 import org.eadge.extractpdfexcel.debug.display.FrameCreator;
 import org.eadge.extractpdfexcel.debug.tests.TestSorter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class TestXclPages
-{
-    public static void main(String[] args) throws IOException
-    {
+public class TestXclPages {
+    public static void main(String[] args) {
         testXcl();
     }
 
-    public static boolean testXcl()
-    {
+    public static boolean testXcl() {
         SortedData sortedData = createSortedPageEx("test/pdf/quiz.pdf");
 
         ArrayList<XclPage> excelPages = PdfConverter.createExcelPages(sortedData);
@@ -27,8 +23,7 @@ public class TestXclPages
         return true;
     }
 
-    public static SortedData createSortedPageEx(String source)
-    {
+    public static SortedData createSortedPageEx(String source) {
         return PdfConverter.sortExtractedData(TestSorter.createExtractedDataEx(source), 0, 1);
     }
 }

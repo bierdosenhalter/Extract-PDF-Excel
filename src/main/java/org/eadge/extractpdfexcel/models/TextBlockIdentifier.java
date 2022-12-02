@@ -5,25 +5,24 @@ package org.eadge.extractpdfexcel.models;
  * <p/>
  * Parameters used to identify separation of blocks.
  */
-public class TextBlockIdentifier
-{
+public class TextBlockIdentifier {
     /**
      * Used to determine different block in extract process.
-     *
+     * <p>
      * Above threshold, two letters are considered on different lines
      */
     public final double sameLineThreshold;
 
     /**
      * Used to detect different block in extract process.
-     *
+     * <p>
      * If space between two letters are above characterSpaceSize * sameBlockFactorX, it's a different block.
      */
     public final double sameBlockFactorX;
 
     /**
      * Used to detect space character in extract process.
-     *
+     * <p>
      * If space is below characterSpaceSize * sameBlockFactorX and above spaceBlockFactorX, it's a space
      * character.
      */
@@ -41,7 +40,7 @@ public class TextBlockIdentifier
 
     /**
      * Used to determine if a block is facing Y or X.
-     *
+     * <p>
      * We take two extremes points of blocks center line and compare coordinates. If difference is under
      * thresholdAlongY, block is facing toward Y axis. Else if difference is above thresholdAlongY, block is facing X
      * axis.
@@ -53,8 +52,7 @@ public class TextBlockIdentifier
                                double spaceBlockFactorX,
                                double thresholdAlongY,
                                double mergeFactor,
-                               boolean cleanDuplicated)
-    {
+                               boolean cleanDuplicated) {
         this.sameLineThreshold = sameLineThreshold;
         this.sameBlockFactorX = sameBlockFactorX;
         this.spaceBlockFactorX = spaceBlockFactorX;
@@ -63,8 +61,7 @@ public class TextBlockIdentifier
         this.cleanDuplicated = cleanDuplicated;
     }
 
-    public TextBlockIdentifier()
-    {
+    public TextBlockIdentifier() {
         this.sameLineThreshold = 1.0f;
         this.sameBlockFactorX = 3.0f;
         this.spaceBlockFactorX = 2.0f;

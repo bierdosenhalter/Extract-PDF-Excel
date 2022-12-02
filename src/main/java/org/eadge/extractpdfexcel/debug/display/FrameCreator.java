@@ -15,13 +15,11 @@ import java.util.Collection;
 
 /**
  * Created by eadgyo on 27/07/16.
- *
+ * <p>
  * Create frame and use panelPage
  */
-public class FrameCreator
-{
-    public static void displayBlocks(String frameName, int width, int height, Collection<Block> blocks)
-    {
+public class FrameCreator {
+    public static void displayBlocks(String frameName, int width, int height, Collection<Block> blocks) {
         if (!Constants.displayBlocks)
             return;
 
@@ -40,8 +38,7 @@ public class FrameCreator
     }
 
 
-    public static void displayExtractedPage(String frameName, ExtractedPage extractedPage)
-    {
+    public static void displayExtractedPage(String frameName, ExtractedPage extractedPage) {
         if (!Constants.displayBlocks)
             return;
 
@@ -59,8 +56,7 @@ public class FrameCreator
         frame.setVisible(true);
     }
 
-    public static void displayRect(String frameName, ArrayList<Rectangle2> rectangles)
-    {
+    public static void displayRect(String frameName, ArrayList<Rectangle2> rectangles) {
         if (!Constants.displayBlocks)
             return;
 
@@ -77,8 +73,7 @@ public class FrameCreator
         frame.setVisible(true);
     }
 
-    public static void displayLanes(String frameName, int width, int height, Lanes lanes, boolean drawBlocks)
-    {
+    public static void displayLanes(String frameName, int width, int height, Lanes lanes, boolean drawBlocks) {
         JFrame frame = createFrameGrid(frameName, 1, 1);
 
         JPanelLane lanesPanel = new JPanelLane(width, height, drawBlocks);
@@ -91,8 +86,7 @@ public class FrameCreator
         frame.setVisible(true);
     }
 
-    public static JFrame displayXclPage(String frameName, int width, int height, XclPage xclPage)
-    {
+    public static JFrame displayXclPage(String frameName, int width, int height, XclPage xclPage) {
         final JFrame frame = createFrameGrid(frameName, 1, 1);
 
         JPanelXcl xclPanel = new JPanelXcl(width, height);
@@ -105,8 +99,7 @@ public class FrameCreator
         return frame;
     }
 
-    public static JFrame displayXclPages(String frameName, int width, int height, Collection<XclPage> xclPages)
-    {
+    public static JFrame displayXclPages(String frameName, int width, int height, Collection<XclPage> xclPages) {
         final JFrame frame = createFrameGrid(frameName, 1, 1);
 
         JPanelXclPages xclPanel = new JPanelXclPages(width, height);
@@ -120,8 +113,7 @@ public class FrameCreator
     }
 
     public static JFrame displayDirectory(String frameName, int width, int height,
-                                          ArrayList<String> xclFiles)
-    {
+                                          ArrayList<String> xclFiles) {
         final JFrame frame = createFrameGrid(frameName, 1, 1);
 
         frame.getContentPane().add(new JPanelXclFiles(width, height, xclFiles));
@@ -133,8 +125,7 @@ public class FrameCreator
     }
 
 
-    public static void displaySortedPage(String frameName, SortedPage sortedPage, boolean drawBlocks)
-    {
+    public static void displaySortedPage(String frameName, SortedPage sortedPage, boolean drawBlocks) {
         JFrame frame = createFrameGrid(frameName, 2, 2);
 
         ExtractedPage extractedPage = sortedPage.getLinkExtractedPage();
@@ -164,13 +155,11 @@ public class FrameCreator
      * Create a frame containing a grid
      *
      * @param frameName name of the created frame
-     * @param nLines number of lines
-     * @param nCols number of columns
-     *
+     * @param nLines    number of lines
+     * @param nCols     number of columns
      * @return created frame with grid
      */
-    public static JFrame createFrameGrid(String frameName, int nLines, int nCols)
-    {
+    public static JFrame createFrameGrid(String frameName, int nLines, int nCols) {
         JFrame frame = new JFrame(frameName);
 
         // Create grid layout

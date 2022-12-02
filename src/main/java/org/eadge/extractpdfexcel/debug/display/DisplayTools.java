@@ -7,20 +7,17 @@ import java.awt.*;
 
 /**
  * Created by eadgyo on 22/07/16.
- *
+ * <p>
  * Display blocks and lanes
  */
-public class DisplayTools
-{
-    public static void drawBlock(Graphics2D g, Block block)
-    {
+public class DisplayTools {
+    public static void drawBlock(Graphics2D g, Block block) {
         // Draw bounds
         Rectangle2 bound = block.getBound();
         drawRect(g, bound);
     }
 
-    public static void drawBlockText(Graphics2D g, Block block)
-    {
+    public static void drawBlockText(Graphics2D g, Block block) {
         // Get rect of block
         Rectangle2 bound = block.getBound();
 
@@ -31,8 +28,7 @@ public class DisplayTools
         drawShortTextInBound(g, formattedText, bound);
     }
 
-    public static void drawShortTextInBound(Graphics2D g, String text, Rectangle2 bound)
-    {
+    public static void drawShortTextInBound(Graphics2D g, String text, Rectangle2 bound) {
         // If the text is too long, shorten the text
         if (text.length() > 10)
             text = text.substring(0, 10);
@@ -41,13 +37,11 @@ public class DisplayTools
         drawTextInBound(g, text, bound);
     }
 
-    public static void drawTextInBound(Graphics2D g, String text, Rectangle2 bound)
-    {
-        g.drawString(text, (int) bound.getX() + 5, (int) (bound.getY() + bound.getHeight()/2 + 5));
+    public static void drawTextInBound(Graphics2D g, String text, Rectangle2 bound) {
+        g.drawString(text, (int) bound.getX() + 5, (int) (bound.getY() + bound.getHeight() / 2 + 5));
     }
 
-    static void drawRect(Graphics g, Rectangle2 rect)
-    {
+    static void drawRect(Graphics g, Rectangle2 rect) {
         g.drawRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
     }
 }

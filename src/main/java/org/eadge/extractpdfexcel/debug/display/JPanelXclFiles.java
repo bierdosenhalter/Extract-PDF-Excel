@@ -14,19 +14,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JPanelXclFiles extends JPanel
-{
-    private JComboBox<String> filesSelector;
-    private List<String> xclFiles;
-    private JPanelXclPages jPanelXclPages;
+public class JPanelXclFiles extends JPanel {
+    private final JComboBox<String> filesSelector;
+    private final JPanelXclPages jPanelXclPages;
 
-    public JPanelXclFiles(double pdfWidth, double pdfHeight, List<String> xclFiles)
-    {
+    public JPanelXclFiles(double pdfWidth, double pdfHeight, List<String> xclFiles) {
         this.setLayout(new BorderLayout());
         jPanelXclPages = new JPanelXclPages(pdfWidth, pdfHeight);
-        this.xclFiles = xclFiles;
 
-        String fileNames[] = new String[xclFiles.size()];
+        String[] fileNames = new String[xclFiles.size()];
         xclFiles.toArray(fileNames);
 
         JPanel southContainer = new JPanel(new BorderLayout());
@@ -38,21 +34,13 @@ public class JPanelXclFiles extends JPanel
         filesSelector.addActionListener(new ItemChanged());
 
         // Set the first file
-        if (xclFiles.size() != 0)
-        {
+        if (xclFiles.size() != 0) {
             // Get the corresponding file
             String firstFileName = fileNames[0];
-            try
-            {
+            try {
                 ArrayList<XclPage> xclPages = getXCLPages(firstFileName);
                 jPanelXclPages.setXclPages(xclPages);
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IncorrectFileTypeException e)
-            {
+            } catch (FileNotFoundException | IncorrectFileTypeException e) {
                 e.printStackTrace();
             }
         }
@@ -64,53 +52,38 @@ public class JPanelXclFiles extends JPanel
         add(jPanelXclPages, BorderLayout.CENTER);
     }
 
-    private class ItemChanged implements ActionListener
-    {
+    private ArrayList<XclPage> getXCLPages(String source) throws FileNotFoundException, IncorrectFileTypeException {
+        return PdfConverter.convertFileToXclPages(source);
+    }
+
+    private class ItemChanged implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             String firstFileName = (String) filesSelector.getSelectedItem();
-            try
-            {
+            try {
                 ArrayList<XclPage> xclPages = getXCLPages(firstFileName);
                 jPanelXclPages.setXclPages(xclPages);
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IncorrectFileTypeException e)
-            {
+            } catch (FileNotFoundException | IncorrectFileTypeException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private class OpenPDF implements ActionListener
-    {
+    private class OpenPDF implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
-            if (Desktop.isDesktopSupported())
-            {
+        public void actionPerformed(ActionEvent actionEvent) {
+            if (Desktop.isDesktopSupported()) {
                 String firstFileName = (String) filesSelector.getSelectedItem();
-                try
-                {
+                try {
+                    assert firstFileName != null;
                     File myFile = new File(firstFileName);
                     Desktop.getDesktop().open(myFile);
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
 
         }
-    }
-
-    private ArrayList<XclPage> getXCLPages(String source) throws FileNotFoundException, IncorrectFileTypeException
-    {
-        return PdfConverter.convertFileToXclPages(source);
     }
 
 

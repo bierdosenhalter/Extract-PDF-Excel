@@ -5,19 +5,16 @@ import org.eadge.extractpdfexcel.data.geom.Rectangle2;
 import org.eadge.extractpdfexcel.debug.display.FrameCreator;
 import org.eadge.extractpdfexcel.tools.DefaultStringFormatter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Created by eadgyo on 27/07/16.
- *
+ * <p>
  * Test Default string formatter
  */
-public class TestDefaultStringFormatter
-{
-    public static void main(String[] args) throws IOException
-    {
+public class TestDefaultStringFormatter {
+    public static void main(String[] args) {
         boolean resultStringFormatter = testStringFormatter();
         boolean resultBlockFormatter = testBlockFormatter();
 
@@ -26,8 +23,7 @@ public class TestDefaultStringFormatter
     }
 
 
-    public static boolean testStringFormatter()
-    {
+    public static boolean testStringFormatter() {
         // Create Default String formatter
         DefaultStringFormatter stringFormatter = new DefaultStringFormatter(10);
 
@@ -35,10 +31,10 @@ public class TestDefaultStringFormatter
         String text = "   Bonjour Me vOici   :    ";
 
         String expected = "bonjour me voici";
-        int expectedStartEnd[] = {3, 19};
+        int[] expectedStartEnd = {3, 19};
 
-        int resultStartEnd[] = {0, 0};
-        String result = stringFormatter.format(text, resultStartEnd);
+        int[] resultStartEnd = {0, 0};
+        String result = DefaultStringFormatter.format(text, resultStartEnd);
 
         if (!checkResult(result, resultStartEnd, expected, expectedStartEnd))
             return false;
@@ -49,16 +45,12 @@ public class TestDefaultStringFormatter
         expectedStartEnd[0] = 0;
         expectedStartEnd[1] = 10;
 
-        result = stringFormatter.format(text, resultStartEnd);
+        result = DefaultStringFormatter.format(text, resultStartEnd);
 
-        if (!checkResult(result, resultStartEnd, expected, expectedStartEnd))
-            return false;
-
-        return true;
+        return checkResult(result, resultStartEnd, expected, expectedStartEnd);
     }
 
-    public static boolean testBlockFormatter()
-    {
+    public static boolean testBlockFormatter() {
         // Create Default String formatter
         DefaultStringFormatter stringFormatter = new DefaultStringFormatter(10);
 
@@ -97,14 +89,10 @@ public class TestDefaultStringFormatter
         if (plat3.getBound().getX() != plat2.getBound().getX())
             return false;
 
-        if (plat3.getBound().getEndPos(0) >= plat2.getEndPos(0))
-            return false;
-
-        return true;
+        return !(plat3.getBound().getEndPos(0) >= plat2.getEndPos(0));
     }
 
-    public static boolean checkResult(String resultText, int resultStartEnd[], String expectedText, int expectedStartEnd[])
-    {
+    public static boolean checkResult(String resultText, int[] resultStartEnd, String expectedText, int[] expectedStartEnd) {
         return resultText.equals(expectedText) && Arrays.equals(resultStartEnd, expectedStartEnd);
     }
 

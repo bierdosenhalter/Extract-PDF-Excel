@@ -5,25 +5,23 @@ import java.awt.*;
 
 /**
  * Created by eadgyo on 22/07/16.
- *
+ * <p>
  * View of drawer
  */
-public class View extends JFrame
-{
-    public Drawer drawer;
-    public JTextArea textBlock;
-    public JButton createNewBlock;
-    public JButton generate;
-    public JButton clear;
-    public JButton delete;
+public class View extends JFrame {
+    public final Drawer drawer;
+    public final JTextArea textBlock;
+    public final JButton createNewBlock;
+    public final JButton generate;
+    public final JButton clear;
+    public final JButton delete;
 
-    public JPopupMenu popupMenu;
-    public JMenuItem createNewBlockMenu;
-    public JMenuItem deleteMenu;
-    public JMenuItem modifyMenu;
+    public final JPopupMenu popupMenu;
+    public final JMenuItem createNewBlockMenu;
+    public final JMenuItem deleteMenu;
+    public final JMenuItem modifyMenu;
 
-    public View()
-    {
+    public View() {
         super("Block creator");
         this.setSize(800, 600);
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));

@@ -9,28 +9,24 @@ import java.util.Collection;
 
 /**
  * Created by eadgyo on 22/07/16.
- *
+ * <p>
  * Display lanes bounds
  */
-public class JPanelLane  extends JResizedPanelPdf
-{
+public class JPanelLane extends JResizedPanelPdf {
+    private final boolean drawBlocks;
     private Lanes lanes = null;
-    private boolean drawBlocks;
 
-    public JPanelLane(double pdfWidth, double pdfHeight, boolean drawBlocks)
-    {
+    public JPanelLane(double pdfWidth, double pdfHeight, boolean drawBlocks) {
         super(pdfWidth, pdfHeight);
         this.drawBlocks = drawBlocks;
     }
 
-    public void setLanes(Lanes lanes)
-    {
+    public void setLanes(Lanes lanes) {
         this.lanes = lanes;
     }
 
     @Override
-    protected void paintComponent(Graphics g)
-    {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         assert (lanes != null);
@@ -42,16 +38,13 @@ public class JPanelLane  extends JResizedPanelPdf
         g.setColor(Color.GRAY);
 
         // Draw each lane
-        for (Lane lane : lanes)
-        {
+        for (Lane lane : lanes) {
             DisplayTools.drawRect(g2d, lane.getBound());
 
-            if (drawBlocks)
-            {
+            if (drawBlocks) {
                 // Display block text content
                 Collection<Block> blocksCollection = lane.getBlocksCollection();
-                for (Block block : blocksCollection)
-                {
+                for (Block block : blocksCollection) {
                     DisplayTools.drawBlock(g2d, block);
                     DisplayTools.drawBlockText(g2d, block);
                 }

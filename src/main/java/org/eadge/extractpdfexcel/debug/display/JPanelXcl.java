@@ -9,31 +9,24 @@ import java.awt.*;
 
 /**
  * Created by eadgyo on 22/07/16.
- *
+ * <p>
  * JPanel to display excel page of cells
  */
-public class JPanelXcl extends JResizedPanelPdf
-{
-    private XclPage xclPage = null;
-
+public class JPanelXcl extends JResizedPanelPdf {
     private static final int X_AXIS = 0;
     private static final int Y_AXIS = 1;
+    private XclPage xclPage = null;
 
-    private static boolean noLength = true;
-
-    public JPanelXcl(double pdfWidth, double pdfHeight)
-    {
+    public JPanelXcl(double pdfWidth, double pdfHeight) {
         super(pdfWidth, pdfHeight);
     }
 
-    public void setXclPage(XclPage xclPage)
-    {
+    public void setXclPage(XclPage xclPage) {
         this.xclPage = xclPage;
     }
 
     @Override
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (xclPage == null)
@@ -48,17 +41,16 @@ public class JPanelXcl extends JResizedPanelPdf
         // Display each block
         g.setColor(Color.GRAY);
 
-        for (int col = 0; col < xclPage.numberOfColumns(); col++)
-        {
+        for (int col = 0; col < xclPage.numberOfColumns(); col++) {
             double columnWidth = (int) (pdfWidth / xclPage.numberOfColumns());
+            boolean noLength = true;
             if (!noLength)
                 columnWidth = (int) xclPage.getColumnWidth(col);
 
             // Reset cursorPosition to the first line
             cursorPosition.set(Y_AXIS, 0);
 
-            for (int line = 0; line < xclPage.numberOfLines(); line++)
-            {
+            for (int line = 0; line < xclPage.numberOfLines(); line++) {
 
                 double lineHeight = (int) (pdfHeight / xclPage.numberOfLines());
                 if (!noLength)
@@ -79,8 +71,7 @@ public class JPanelXcl extends JResizedPanelPdf
                 Block block = xclPage.getBlockAt(col, line);
 
                 // If there is a block
-                if (block != null)
-                {
+                if (block != null) {
                     g2d.setColor(Color.DARK_GRAY);
 
                     // Draw block text content

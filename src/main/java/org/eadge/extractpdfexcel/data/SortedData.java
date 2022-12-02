@@ -8,23 +8,20 @@ import java.util.Map;
  * <p/>
  * Blocks sorted in lines and columns, and separated in pages
  */
-public class SortedData
-{
-    private Map<Integer, SortedPage> sortedPages;
+public class SortedData {
+    private final Map<Integer, SortedPage> sortedPages;
 
-    public SortedData()
-    {
-        sortedPages = new HashMap<Integer, SortedPage>();
+    public SortedData() {
+        sortedPages = new HashMap<>();
     }
 
     /**
      * Insert an sortedPage
      *
-     * @param pageIndex   index of concerned page
+     * @param pageIndex  index of concerned page
      * @param sortedPage inserted sortedPage
      */
-    public void insertPage(int pageIndex, SortedPage sortedPage)
-    {
+    public void insertPage(int pageIndex, SortedPage sortedPage) {
         this.sortedPages.put(pageIndex, sortedPage);
     }
 
@@ -33,8 +30,7 @@ public class SortedData
      *
      * @return all blocks separated in page
      */
-    public Map<Integer, SortedPage> getPages()
-    {
+    public Map<Integer, SortedPage> getPages() {
         return sortedPages;
     }
 
@@ -44,13 +40,11 @@ public class SortedData
      * @param pageIndex index of page
      * @return page with extracted data
      */
-    public SortedPage getSortedPage(int pageIndex)
-    {
+    public SortedPage getSortedPage(int pageIndex) {
         return sortedPages.get(pageIndex);
     }
 
-    public int numberOfPages()
-    {
+    public int numberOfPages() {
         return sortedPages.size();
     }
 }

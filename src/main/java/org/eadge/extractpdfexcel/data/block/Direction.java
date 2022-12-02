@@ -5,35 +5,29 @@ package org.eadge.extractpdfexcel.data.block;
  * <p/>
  * Used to indicate direction.
  */
-public enum Direction
-{
+public enum Direction {
     LEFT,
     RIGHT,
     TOP,
     BOTTOM;
 
-    public boolean isInPortrayMode()
-    {
+    public boolean isInPortrayMode() {
         return this.equals(TOP) || this.equals(BOTTOM);
     }
 
-    public int getLaneDirection()
-    {
+    public int getLaneDirection() {
         return isInPortrayMode() ? 0 : 1;
     }
 
-    public int getOppositeLaneDirection()
-    {
+    public int getOppositeLaneDirection() {
         return isInPortrayMode() ? 1 : 0;
     }
 
-    public int getLaneDirectionVector()
-    {
+    public int getLaneDirectionVector() {
         return isInPortrayMode() ? 1 : 0;
     }
 
-    public int getOppositeLaneDirectionVector()
-    {
+    public int getOppositeLaneDirectionVector() {
         return isInPortrayMode() ? 0 : 1;
     }
 }

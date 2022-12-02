@@ -12,8 +12,7 @@ import java.util.Map;
  * <p/>
  * Tools to handle lane/lane and block/lane collisions.
  */
-class CollisionTools
-{
+class CollisionTools {
 
     /**
      * Test if a block is colliding with a lane
@@ -21,11 +20,9 @@ class CollisionTools
      * @param oppositeAxis opposite axis of lane
      * @param block        tested block
      * @param lane         tested lane
-     *
      * @return true if they are colliding, false if they aren't
      */
-    static boolean isCollidingWithBlock(int oppositeAxis, Block block, Lane lane)
-    {
+    static boolean isCollidingWithBlock(int oppositeAxis, Block block, Lane lane) {
         return areRectColliding(oppositeAxis, block.getBound(), lane.getBound());
     }
 
@@ -35,11 +32,9 @@ class CollisionTools
      * @param oneAxis used axis
      * @param rect1   first rectangle
      * @param rect2   second rectangle
-     *
      * @return true if they are colliding, false if they aren't
      */
-    public static boolean areRectColliding(int oneAxis, Rectangle2 rect1, Rectangle2 rect2)
-    {
+    public static boolean areRectColliding(int oneAxis, Rectangle2 rect1, Rectangle2 rect2) {
         return rect1.getPos(oneAxis) < rect2.getPos(oneAxis) + rect2.getLength(oneAxis) &&
                 rect1.getPos(oneAxis) + rect1.getLength(oneAxis) > rect2.getPos(oneAxis);
     }
@@ -49,17 +44,14 @@ class CollisionTools
      *
      * @param axis  opposite lane axis
      * @param block checked block
-     *
      * @return block that is colliding with checked block, or null if there are no blocks in collision.
      */
-    static Block getBlockCollidingInLane(int axis, Block block, Lane lane)
-    {
+    static Block getBlockCollidingInLane(int axis, Block block, Lane lane) {
         // Get higher block that is not colliding
         Map.Entry<Double, Block> mayCollidingBlockEntry = lane.getHigherBlockEntry(block.getPos(axis));
 
         // If higher is not colliding, try to get lower blocks that may collide on axis lane
-        if (mayCollidingBlockEntry == null)
-        {
+        if (mayCollidingBlockEntry == null) {
             mayCollidingBlockEntry = lane.getFloorBlockEntry(block.getPos(axis));
         }
 
@@ -69,12 +61,11 @@ class CollisionTools
         while (mayCollidingBlockEntry != null &&
                 (lastCollisionState =
                         getStateColliding(axis,
-                                          block.getBound(),
-                                          mayCollidingBlockEntry.getValue()
-                                                                .getBound())) == CollisionState.NO_COLLISION_RIGHT)
-        {
+                                block.getBound(),
+                                mayCollidingBlockEntry.getValue()
+                                        .getBound())) == CollisionState.NO_COLLISION_RIGHT) {
             // Still not found colliding block nor end of possibles colliding blocks
-            // So get left block, that is may be colliding with checked block
+            // So get left block, that is maybe colliding with checked block
             mayCollidingBlockEntry = lane.getLowerBlockEntry(mayCollidingBlockEntry.getKey());
         }
 
@@ -98,11 +89,9 @@ class CollisionTools
      * @param oneAxis used axis
      * @param rect1   first rectangle
      * @param rect2   second rectangle
-     *
      * @return 2 rectangles collision state
      */
-    private static CollisionState getStateColliding(int oneAxis, Rectangle2 rect1, Rectangle2 rect2)
-    {
+    private static CollisionState getStateColliding(int oneAxis, Rectangle2 rect1, Rectangle2 rect2) {
         // If rect1 is before rect2
         if (rect1.getPos(oneAxis) + rect1.getLength(oneAxis) <= rect2.getPos(oneAxis))
             return CollisionState.NO_COLLISION_RIGHT;

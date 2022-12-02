@@ -16,113 +16,87 @@ import org.eadge.extractpdfexcel.models.TextBlockIdentifier;
 import org.eadge.extractpdfexcel.process.arrangement.BlockSorter;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * Created by eadgyo on 27/07/16.
- *
+ * <p>
  * Test sort process
  */
-public class TestSorter
-{
-    public static void main(String[] args) throws IOException
-    {
+public class TestSorter {
+    public static void main(String[] args) {
         boolean resultBlockSorterExtractedPage = testBlockSorterExtractedPage();
         //boolean resultSortExtractedPage = testSortExtractedPage();
         System.out.println(Result.transformResult(resultBlockSorterExtractedPage) + " Block sorter");
         //System.out.println(Result.transformResult(resultSortExtractedPage) + " Sort extracted page");
     }
 
-    public static ExtractedPage createExtractedPageEx(String source)
-    {
+    public static ExtractedPage createExtractedPageEx(String source) {
         Collection<ExtractedPage> pages = createExtractedDataEx(source).getPagesCollection();
 
         return pages.iterator().next();
     }
 
-    public static ExtractedData createExtractedDataEx(String source)
-    {
+    public static ExtractedData createExtractedDataEx(String source) {
         TextBlockIdentifier blockIdentifier = new TextBlockIdentifier();
 
         ExtractedData extractedPdf = null;
-        try
-        {
+        try {
             extractedPdf = PdfConverter.extractFromFile(source, blockIdentifier);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IncorrectFileTypeException e)
-        {
+        } catch (FileNotFoundException | IncorrectFileTypeException e) {
             e.printStackTrace();
         }
 
         return extractedPdf;
     }
 
-    public static boolean testBlockSorterExtractedPage()
-    {
+    public static boolean testBlockSorterExtractedPage() {
         ExtractedPage extractedPage = createExtractedPageEx("test/pdf/test.pdf");
 
-        Collection<Block> blocks      = extractedPage.getBlocks();
-        ArrayList<Block>  addedBlocks = new ArrayList<>();
+        Collection<Block> blocks = extractedPage.getBlocks();
+        ArrayList<Block> addedBlocks = new ArrayList<>();
 
         Lanes columns = new Lanes();
         Lanes lines = new Lanes();
 
-        for (Block block : blocks)
-        {
+        for (Block block : blocks) {
             addedBlocks.add(block);
 
             BlockSorter.insertInLanes(SortedPage.DEFAULT_COLUMN_AXIS,
-                                      SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS,
-                                      block,
-                                      columns);
+                    SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS,
+                    block,
+                    columns);
 
 
-            try
-            {
+            try {
                 columns.checkLaneAndAssociatedKey(SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS);
-            }
-            catch (DifferentKeyLaneException e)
-            {
+            } catch (DifferentKeyLaneException e) {
                 e.printStackTrace();
                 return false;
             }
 
-            try
-            {
+            try {
                 columns.checkBlocksAllContains(addedBlocks);
-            }
-            catch (DuplicatedBlockException | NoCorrespondingLane e)
-            {
+            } catch (DuplicatedBlockException | NoCorrespondingLane e) {
                 e.printStackTrace();
                 return false;
             }
 
             BlockSorter.insertInLanes(SortedPage.DEFAULT_LINE_AXIS,
-                                      SortedPage.DEFAULT_OPPOSITE_LINE_AXIS,
-                                      block,
-                                      lines);
-            try
-            {
+                    SortedPage.DEFAULT_OPPOSITE_LINE_AXIS,
+                    block,
+                    lines);
+            try {
                 lines.checkLaneAndAssociatedKey(SortedPage.DEFAULT_OPPOSITE_LINE_AXIS);
-            }
-            catch (DifferentKeyLaneException e)
-            {
+            } catch (DifferentKeyLaneException e) {
                 e.printStackTrace();
                 return false;
             }
 
-            try
-            {
+            try {
                 lines.checkBlocksAllContains(addedBlocks);
-            }
-            catch (DuplicatedBlockException | NoCorrespondingLane e)
-            {
+            } catch (DuplicatedBlockException | NoCorrespondingLane e) {
                 e.printStackTrace();
                 return false;
             }
@@ -131,11 +105,11 @@ public class TestSorter
 
 
         BlockSorter.reinsertBlockMoreCollidingHigherLane(SortedPage.DEFAULT_LINE_AXIS,
-                                                         SortedPage.DEFAULT_OPPOSITE_LINE_AXIS,
-                                                         lines);
+                SortedPage.DEFAULT_OPPOSITE_LINE_AXIS,
+                lines);
         BlockSorter.reinsertBlockMoreCollidingHigherLane(SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS,
-                                                        SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS,
-                                                         columns);
+                SortedPage.DEFAULT_OPPOSITE_COLUMN_AXIS,
+                columns);
 
         FrameCreator.displayBlocks("Blocks", 800, 600, blocks);
         FrameCreator.displayLanes("Cols", 800, 600, columns, false);
@@ -143,8 +117,7 @@ public class TestSorter
         return true;
     }
 
-    public static ExtractedPage createExtractedPage2()
-    {
+    public static ExtractedPage createExtractedPage2() {
         ExtractedPage extractedPage = new ExtractedPage(800, 600);
 
         ArrayList<Block> blocks = new ArrayList<>();
@@ -186,19 +159,17 @@ public class TestSorter
         return extractedPage;
     }
 
-    public static boolean testSortExtractedPage()
-    {
+    public static boolean testSortExtractedPage() {
         ExtractedPage extractedPage = createExtractedPage();
 
         SortedPage sortedPage = PdfConverter.sortExtractedPage(extractedPage, 0, 1);
 
-        FrameCreator.displaySortedPage("Sorted Page", sortedPage,true);
+        FrameCreator.displaySortedPage("Sorted Page", sortedPage, true);
 
         return true;
     }
 
-    public static ExtractedPage createExtractedPage()
-    {
+    public static ExtractedPage createExtractedPage() {
         ExtractedPage extractedPage = new ExtractedPage(800, 600);
 
         ArrayList<Block> blocks = new ArrayList<>();

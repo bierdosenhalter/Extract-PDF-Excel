@@ -14,27 +14,25 @@ import java.util.Observer;
 
 /**
  * Created by eadgyo on 22/07/16.
- *
+ * <p>
  * Controller of drawer
  */
-public class Controller
-{
-    private View         view;
-    private Model        model;
+public class Controller {
+    private final View view;
+    private final Model model;
 
-    private DeleteAction deleteAction;
-    private ModifyAction modifyAction;
-    private CreateAction createAction;
+    private final DeleteAction deleteAction;
+    private final ModifyAction modifyAction;
+    private final CreateAction createAction;
 
-    public Controller()
-    {
+    public Controller() {
         model = new Model();
         view = new View();
         view.drawer.setModel(model);
 
         // Create actions
         GenerateAction generateAction = new GenerateAction();
-        ClearAction    clearAction    = new ClearAction();
+        ClearAction clearAction = new ClearAction();
         createAction = new CreateAction();
         deleteAction = new DeleteAction();
         modifyAction = new ModifyAction();
@@ -63,20 +61,16 @@ public class Controller
         view.setVisible(true);
     }
 
-    private class MyMouseListener implements MouseMotionListener, MouseListener
-    {
+    private class MyMouseListener implements MouseMotionListener, MouseListener {
         private Vector2 lastMousePos = null;
 
         @Override
-        public void mouseClicked(MouseEvent mouseEvent)
-        {
+        public void mouseClicked(MouseEvent mouseEvent) {
             // If double click
-            if (mouseEvent.getClickCount() == 2)
-            {
-                Vector2 vector2     = new Vector2(mouseEvent.getX(), mouseEvent.getY());
-                Block   actualBlock = model.getSelected();
-                if (actualBlock != null)
-                {
+            if (mouseEvent.getClickCount() == 2) {
+                Vector2 vector2 = new Vector2(mouseEvent.getX(), mouseEvent.getY());
+                Block actualBlock = model.getSelected();
+                if (actualBlock != null) {
                     // Update the selected point
                     model.setSelectedPointAndResetIfSame(vector2);
                 }
@@ -84,50 +78,40 @@ public class Controller
         }
 
         @Override
-        public void mousePressed(MouseEvent mouseEvent)
-        {
+        public void mousePressed(MouseEvent mouseEvent) {
             Vector2 vector2 = new Vector2(mouseEvent.getX(), mouseEvent.getY());
 
             // Save coordinates for possible block creation
             createAction.setSavedXandY(mouseEvent.getX(), mouseEvent.getY());
 
             // If press right click
-            if (mouseEvent.getButton() == MouseEvent.BUTTON3)
-            {
+            if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
                 // Update selected block
                 model.setSelected(vector2);
 
                 // Show popup menu
                 view.popupMenu.show(view, mouseEvent.getX(), mouseEvent.getY());
-            }
-            else if (mouseEvent.getButton() == MouseEvent.BUTTON1) // Press left click
+            } else if (mouseEvent.getButton() == MouseEvent.BUTTON1) // Press left click
             {
                 // If there was a selected block
-                if (model.getSelected() != null)
-                {
+                if (model.getSelected() != null) {
                     // If one point is already selected
-                    if (model.getSelectedPoint() != -1)
-                    {
+                    if (model.getSelectedPoint() != -1) {
                         // Update the selected point
                         model.setSelectedPoint(vector2);
 
                         // If no points are selected
-                        if (model.getSelectedPoint() == -1)
-                        {
+                        if (model.getSelectedPoint() == -1) {
                             // It may not be this block
                             // Update selected block
                             model.setSelected(vector2);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // No point selected
                         // Update the selected block
                         model.setSelected(vector2);
                     }
-                }
-                else
-                {
+                } else {
                     // There were no blocks selected
                     // Update the selected block
                     model.setSelected(vector2);
@@ -137,41 +121,33 @@ public class Controller
         }
 
         @Override
-        public void mouseReleased(MouseEvent mouseEvent)
-        {
+        public void mouseReleased(MouseEvent mouseEvent) {
 
         }
 
         @Override
-        public void mouseEntered(MouseEvent mouseEvent)
-        {
+        public void mouseEntered(MouseEvent mouseEvent) {
 
         }
 
         @Override
-        public void mouseExited(MouseEvent mouseEvent)
-        {
+        public void mouseExited(MouseEvent mouseEvent) {
 
         }
 
         @Override
-        public void mouseDragged(MouseEvent mouseEvent)
-        {
+        public void mouseDragged(MouseEvent mouseEvent) {
             Block actualBlock = model.getSelected();
 
             // If there are no bocks selected
-            if (actualBlock != null)
-            {
+            if (actualBlock != null) {
                 Vector2 vector2 = new Vector2(mouseEvent.getX(), mouseEvent.getY());
 
                 // If a point is selected
-                if (model.getSelectedPoint() != -1)
-                {
+                if (model.getSelectedPoint() != -1) {
                     // Move point of the block
                     model.movePoint(vector2);
-                }
-                else
-                {
+                } else {
                     // Move entire block
                     Vector2 translate = new Vector2(vector2, lastMousePos);
                     model.translate(translate);
@@ -182,73 +158,60 @@ public class Controller
         }
 
         @Override
-        public void mouseMoved(MouseEvent mouseEvent)
-        {
+        public void mouseMoved(MouseEvent mouseEvent) {
 
         }
     }
 
-    private class GenerateAction extends AbstractAction
-    {
-        public GenerateAction()
-        {
+    private class GenerateAction extends AbstractAction {
+        public GenerateAction() {
             super("Generate");
         }
 
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             view.textBlock.setText(model.toString());
         }
     }
 
-    private class ClearAction extends AbstractAction
-    {
-        public ClearAction()
-        {
+    private class ClearAction extends AbstractAction {
+        public ClearAction() {
             super("Clear");
         }
 
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             model.clear();
             view.textBlock.setText("");
         }
     }
 
-    private class ModifyAction extends AbstractAction
-    {
-        public ModifyAction()
-        {
+    private class ModifyAction extends AbstractAction {
+        public ModifyAction() {
             super("Modify");
         }
 
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             // If one block is selected
             Block selected = model.getSelected();
 
             // Change his text
             String originalText = JOptionPane.showInputDialog(view,
-                                                              "Text du block",
-                                                              selected.getOriginalText());
+                    "Text du block",
+                    selected.getOriginalText());
 
             // If originalText has changed
-            if (originalText != null)
-            {
+            if (originalText != null) {
                 // Update block content
                 model.changeSelectedText(originalText);
             }
         }
     }
 
-    private class UpdateText implements Observer
-    {
+    private class UpdateText implements Observer {
         @Override
-        public void update(Observable observable, Object o)
-        {
+        public void update(Observable observable, Object o) {
             // Update text
             view.textBlock.setText(model.toString());
 
@@ -263,61 +226,50 @@ public class Controller
         }
     }
 
-    private class DeleteAction extends AbstractAction
-    {
-        public DeleteAction()
-        {
+    private class DeleteAction extends AbstractAction {
+        public DeleteAction() {
             super("Delete");
         }
 
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             model.removeSelected();
         }
     }
 
-    private class CreateAction extends AbstractAction
-    {
+    private class CreateAction extends AbstractAction {
         private int savedX, savedY;
 
-        public CreateAction()
-        {
+        public CreateAction() {
             super("Create");
         }
 
         @Override
-        public void actionPerformed(ActionEvent actionEvent)
-        {
+        public void actionPerformed(ActionEvent actionEvent) {
             String originalText = JOptionPane.showInputDialog(view,
-                                                              "Text du block",
-                                                              "test");
+                    "Text du block",
+                    "test");
 
-            if (originalText != null)
-            {
+            if (originalText != null) {
                 Block block = new Block(originalText, new Rectangle2(savedX, savedY, 50, 50));
                 model.addBlock(block);
             }
         }
 
-        public void setSavedX(int savedX)
-        {
+        public void setSavedX(int savedX) {
             this.savedX = savedX;
         }
 
-        public void setSavedY(int savedY)
-        {
+        public void setSavedY(int savedY) {
             this.savedY = savedY;
         }
 
-        public void clearXandY()
-        {
+        public void clearXandY() {
             savedX = 10;
             savedY = 10;
         }
 
-        public void setSavedXandY(int x, int y)
-        {
+        public void setSavedXandY(int x, int y) {
             savedX = x;
             savedY = y;
         }
